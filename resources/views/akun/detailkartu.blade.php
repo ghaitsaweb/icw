@@ -252,7 +252,7 @@
 <div class="input-group mb-3">
   <input type="text" class="form-control" placeholder="Jumlah Masuk" aria-label="Recipient's username" aria-describedby="basic-addon2">
   <div class="input-group-append">
-    <span class="input-group-text" id="basic-addon2">Masuk</span>
+    <span class="input-group-text" id="basic-addon2">Masuk</span> 
   </div>
 </div>
       </div>
