@@ -9,7 +9,8 @@ class DashboardController extends Controller
     public function index()
     {   $data = \   DB::table('master_gudang')  
         ->get();
-        //dd($data);
+        //  dd($data);
+        
         return view('dashboard.index',compact('data'));
     }
     public function detail($id)

@@ -9,9 +9,23 @@
                 <li> <a class="waves-effect waves-dark" href="{{ route('dashboard.index') }}"><i
                             class="fas fa-users-cog"></i><span class="hide-menu">Dashboard</span></a>
                 </li>
-                <!-- <li> <a class="waves-effect waves-dark" href="{{ route('masterflow.index') }}"><i
+                <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle waves-effect waves-dark" href=""
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i
+                                    class="fas fa-users-cog"></i>Master
+                            </a>
+                            <div class="dropdown-menu">
+                                <ul>
+                                <li> <a class="waves-effect waves-dark" href="{{ route('lokasi.index') }}"><i
+                            class="fas fa-users-cog"></i><span class="hide-menu">Master Lokasi</span></a>
+                </li>
+                <!-- <li> <a class="waves-effect waves-dark" href="{{ route('report.index') }}"><i
                             class="fas fa-users-cog"></i><span class="hide-menu">Master</span></a>
                 </li> -->
+
+                                </ul>
+                            </div>
+                        </li>
                 <li> <a class="waves-effect waves-dark" href="{{ route('adjust.create') }}"><i
                             class="fas fa-users-cog"></i><span class="hide-menu">Adjustment </span></a>
                 </li>
@@ -21,6 +35,9 @@
                 <li> <a class="waves-effect waves-dark" href="{{ route('report.index') }}"><i
                             class="fas fa-users-cog"></i><span class="hide-menu">Report</span></a>
                 </li>
+
+                
+
                 
 
                 {{-- @endif --}}

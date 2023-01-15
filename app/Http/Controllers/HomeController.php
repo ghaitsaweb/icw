@@ -23,24 +23,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $tanggal = RequestModel::where('status','solved')->get();
-        foreach($tanggal as $t){
-            $date = strtotime("+1 day", strtotime($t->tgl_solved));
-            $finaldate = date("Y-m-d", $date);
-            $tgl_sekarang = date('Y-m-d');
-
-            if(strtotime($tgl_sekarang)  >= strtotime($finaldate) ){
-                $req = RequestModel::find($t->id);
-                $timestamp = $now->format('y-m-d H:i:s');
-                $req->update(['status' => 'close',
-                'tgl_close' => $timestamp]);
-            }
-        }
-
-        $countall = RequestModel::count();
-        $countsolved = RequestModel::where('status','solved')->count();
-        $countclosed = RequestModel::where('status','close')->count();
-        return view('dashboard',compact('countall','countsolved','countclosed'));
+$data = \   DB::table('master_gudang')  
+        ->get();
+        //  dd($data);
+        
+        return view('dashboard.index',compact('data'));
     }
     public function changePasswordForm(Request $request){
 

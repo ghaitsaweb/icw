@@ -9,6 +9,8 @@
             </div>
         </div>
         <div class="col-md-7 align-self-center text-right">
+        <!-- <a href="{{ url('akun/pdfc/') }}" class="btn btn-info d-none d-lg-block m-l-15"><i
+                        class="fa fa-plus-circle"></i>{!! QrCode::size(100)->generate('sahretech.com'); !!} Detail</a> -->
 
         </div>
     </div>
@@ -126,7 +128,7 @@
       <select name="select2insidemodal" id="select2insidemodal" class="form-control" data-control="select2" required>
       <option value="" disabled selected>--PIlih Rak--</option>
       @foreach ($suggest as $k => $item)
-                     <option value="{{$item->id}}">{{$item->nama}}({{$item->percent}} %)</option>
+                     <option value="{{$item->id}}">{{$item->nama}}({{$item->pr}} %)</option>
                      @endforeach
              </select>
 </div><button type="button" class="btn btn-primary" onclick="post({{$ids}},{{$data->qty_g}});" data-id="{{$ids}}">Simpan</button>
@@ -155,7 +157,7 @@
                  
       <option value="" disabled selected>--PIlih Rak--</option>
       @foreach ($manual as $k => $item)
-                     <option value="{{$item->id}}">{{$item->nama}}({{$item->percent}} %)</option>
+                     <option value="{{$item->id}}">{{$item->nama}}({{$item->pr}} %)</option>
                      @endforeach
              </select>
 </div><button type="button" class="btn btn-primary" onclick="postmanual({{$ids}},{{$data->qty_g}});" data-id="{{$ids}}">Simpan</button>

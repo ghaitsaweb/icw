@@ -46,14 +46,16 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Nomor kartu</th>
-                            <th>Nama Barang</th>
-                            <th>Default Code</th>
+                            <th>aksi</th>
+                            <th>No kartu</th>
+                            <th>Barang</th>
+                            <th>Code</th>
                             <th>Uom</th>
-                            <th>Production Lot</th>
+                            <th>Lot</th>
                             <th>Qty</th>
                             <th>Kategori</th>
-                            <th>aksi</th>
+                            <th>Days to Expiration</th>
+                            
                             <!-- <th>Aksi</th> -->
 
                         </tr>
@@ -63,6 +65,12 @@
                         @foreach ($kartu as $item)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
+                               
+                                <td><a href="{{ url('akun/detailkartu/'.$item->id) }}" class="btn btn-info d-none d-lg-block m-l-15"><i
+                        class="fa fa-info-circle"></i> Detail</a>
+                        <br><a class="btn btn-success d-none d-lg-block m-l-15" href="{{action('AkunController@barcode', $item->id)}}" role="button"><i
+                        class="fa fa-qrcode"></i> Cetak</a>
+                                </td>
                                 <td>{{ $item->id }}</td>
                                 <td>{{ $item->nama_barang }}</td>
                                 <td>{{ $item->default_code }}</td>
@@ -71,15 +79,10 @@
                                 <td>{{ $item->qty_gerak }}</td>
                                 <td>{{ $item->kategori_barang }}
                                 </td>
-                               
-                                <!-- <td>{{ $item->sisa }}</td> -->
-                                <td>                 
-                                 <!-- <button type="button" class="btn btn-primary" onclick="detail({{$item->id}});" data-id="{{$item->id}}">
-Detail
-                   </button> -->
-                   <a href="{{ url('akun/detailkartu/'.$item->id) }}" class="btn btn-info d-none d-lg-block m-l-15"><i
-                        class="fa fa-plus-circle"></i> Detail</a>
+                                <td>{{ $item->use_time }}
                                 </td>
+                                
+
                             </tr>
                         @endforeach
                     </tbody>

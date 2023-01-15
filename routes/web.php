@@ -18,6 +18,16 @@ Route::get('/', 'HomeController@index')->name('home');
 Route::resource('akun', 'AkunController');
 Route::resource('masterflow', 'MasterflowController');
 Route::resource('report', 'ReportController');
+
+Route::resource('lokasi', 'LokasiController');
+Route::get('/lokasi/detail/{id}', 'LokasiController@detail');
+Route::get('/lokasi/detail1/{id}', 'LokasiController@detail1');
+Route::post('loksave', 'LokasiController@loksave')->name('lokasi.loksave'); 
+Route::get('/lokasi/edit/{id}', 'LokasiController@edit');
+Route::post('lokedit', 'LokasiController@lokedit')->name('lokasi.lokedit');
+
+Route::get('/lokasi/create1/{id}', 'LokasiController@create1');
+
 Route::post('showtujuan', 'AkunController@showtujuan')->name('akun.showtujuan'); 
 Route::post('detail', 'AkunController@detail')->name('akun.detail'); 
 Route::resource('adjust', 'AdjustmentController');
@@ -29,11 +39,16 @@ Route::post('showadj', 'AdjustmentController@showadj')->name('adjust.showadj');
 Route::post('reject', 'AdjustmentController@reject')->name('adjust.reject');
 Route::post('buat', 'AkunController@buat')->name('akun.buat'); 
 Route::post('upload', 'AdjustmentController@upload')->name('adjust.upload');  
-Route::get('/akun/detailkartu/{id}', 'AkunController@detail');
+Route::get('/akun/detailkartu/{id}', 'AkunController@detail'); 
 Route::post('qtyout', 'AkunController@qtyout')->name('akun.qtyout'); 
 Route::post('qtyin', 'AkunController@qtyin')->name('akun.qtyin'); 
 Route::post('details', 'AkunController@details')->name('akun.details'); 
 Route::post('posts', 'AkunController@posts')->name('akun.posts'); 
+Route::get('pdfc', 'PDFController@generatePDF')->name('pdfc');
+Route::post('barcode', 'AkunController@barcode')->name('akun.barcode'); 
+Route::get('/downloadPDF/{id}','AkunController@barcode');
+Route::get('/akun/detail_json/{id}', 'AkunController@detail_json'); 
+Route::get('detail_json_all', 'AkunController@detail_json_all');
 
 
 Route::resource('dashboard', 'DashboardController');

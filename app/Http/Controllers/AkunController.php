@@ -11,6 +11,10 @@ use App\LogModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Image;
+use DB;
+use PDF;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\LokasiModel;
 
 class AkunController extends Controller
 {
@@ -21,9 +25,45 @@ class AkunController extends Controller
      */
     public function index()
     {
-        $kartu = Kartu::all();
+        // $kartu = Kartu::all();
+
+        $kartu = \   DB::table('kartu_stock')  
+        ->leftjoin('product_product', 'kartu_stock.product_id', '=', 'product_product.id')
+        ->leftjoin('product_template', 'product_product.product_tmpl_id', '=', 'product_template.id')
+        ->select('kartu_stock.id as id',
+        'kartu_stock.idbpj as idbpj',
+        'kartu_stock.product_id',
+        'kartu_stock.nama_barang as nama_barang',
+        'kartu_stock.default_code',
+        'kartu_stock.productionlot',
+        'kartu_stock.qty as qty',
+        'kartu_stock.kategori_barang as kategori_barang'
+        ,'kartu_stock.id_stockmove as id_stockmove',
+        'kartu_stock.qty_gerak as qty_gerak','kartu_stock.created_date','kartu_stock.created',
+        'kartu_stock.uom',
+        'kartu_stock.id_lok'
+        ,'product_template.use_time')
+        ->get();
         // dd($kartu);
         return view('akun.index', compact('kartu'));
+    }
+    public function barcode(Request $request)
+    {  // dd($request);
+        $data = \   DB::table('kartu_stock')  
+        ->leftjoin('master_lokasi', 'master_lokasi.id', '=', 'kartu_stock.id_lok')
+        ->where('kartu_stock.id', '=', $request->id)
+        ->select('kartu_stock.id as iddetail','kartu_stock.product_id', 'kartu_stock.nama_barang as nama_barang','kartu_stock.default_code',
+        'kartu_stock.productionlot','kartu_stock.qty as qty','kartu_stock.kategori_barang as kategori_barang'
+        ,'kartu_stock.id_stockmove as id_stockmove','kartu_stock.qty_gerak as qty_g','master_lokasi.nama_lokasi as nama_lokasi')
+        ->first();
+        $qty  = $data->qty;
+        $kode = substr($data->default_code,0,3); //dd($kode);
+
+        $data = ['title' => $request->id,'jumlah' => $qty,'jumlah' => $kode];
+        $pdf = PDF::loadView('akun.myPDF', $data)->setPaper([0, 0, 175,280], 'landscape');
+  
+        return $pdf->download('Barcode_ICW'.'_'.$kode.'_'.$request->id.'.pdf');
+        // return view('akun.myPDF');  
     }
 
     /**
@@ -107,6 +147,25 @@ class AkunController extends Controller
         $msg = "This is a simple message.";
         return response()->json(array('msg' => $msg), 200);
     }
+
+    public function detail_json($id)
+    {     
+
+        $ids=$id;
+
+        $data = \   DB::table('master_lokasi')  ->where('master_lokasi.id', '=', $ids)
+        ->select('id','nama_lokasi', 'gudang',
+        'kategori',
+        'kapasitas','terpakai','id_detail')
+        ->first();//dd($data);
+return json_encode($data);
+
+    }
+    public function detail_json_all()
+    {   
+        return  json_encode(LokasiModel::all());
+
+    }
     public function detail($id)
     {     
 
@@ -124,14 +183,14 @@ class AkunController extends Controller
         $suggest = \   DB::table('lok')  
         ->where('lok.kategori', '=', $data->kategori_barang)
         ->where('lok.gudang', '=', $ak)
-        ->select('lok.id as id','lok.nama_lokasi as nama','lok.gudang as gudang','lok.kategori as kategori','lok.kapasitas as kapasitas','lok.terpakai as terpakai','lok.percent as percent')
+        ->select('lok.id as id','lok.nama_lokasi as nama','lok.gudang as gudang','lok.kategori as kategori','lok.kapasitas as kapasitas','lok.terpakai as terpakai','lok.percent as percent','lok.pr as pr')
         ->orderBy('lok.percent', 'DESC')
         ->limit(3)
         ->get();//dd($suggest);
         $manual = \   DB::table('lok')  
         ->where('lok.kategori', '=', $data->kategori_barang)
         ->where('lok.gudang', '=', $ak)
-        ->select('lok.id as id','lok.nama_lokasi as nama','lok.gudang as gudang','lok.kategori as kategori','lok.kapasitas as kapasitas','lok.terpakai as terpakai','lok.percent as percent')
+        ->select('lok.id as id','lok.nama_lokasi as nama','lok.gudang as gudang','lok.kategori as kategori','lok.kapasitas as kapasitas','lok.terpakai as terpakai','lok.percent as percent','lok.pr as pr')
         ->orderBy('lok.terpakai', 'ASC')
         ->get();
 
@@ -211,11 +270,11 @@ class AkunController extends Controller
         ->leftjoin('kartu_stock', 'kartu_stock.id_stockmove', '=', 'stock_move.id')
         ->where('stock_move.picking_id', '=', $request->IDstock)
         ->leftjoin('adjustment', 'adjustment.product_id', '=', 'stock_move.product_id')     
-        ->where('adjustment.status', '=', 'done')
+        // ->where('adjustment.status', '=', 'done')
         ->select('stock_move.id as id','stock_move.x_kartu', 'product_template.name as name_template','stock_production_lot.name','stock_move.product_uom_qty','adjustment.kategori as kategori','stock_move.product_id as product_id'
-        ,'product_product.default_code as default_code','product_uom.name as uomname')
+        ,'product_product.default_code as default_code','product_uom.name as uomname','kartu_stock.id as id_card')
         ->get();
-        //dd($data);
+       //dd($data);
         return view('akun.detail',compact('data', 'bpj'));
     }
 
@@ -320,8 +379,14 @@ class AkunController extends Controller
                 'productionlot' => $request->productionlot, 'qty' => $request->uom,'kategori_barang' => $request->kat,'id_stockmove' => $request->id, 'qty_gerak' => $request->uom
                 , 'created_date' => $date, 'created' => $auth, 'uom' =>$request->uomname]
                   ); 
+$reff_id = DB::getPdo()->lastInsertId();
 
-        }else{
+$reff_id1 ='http://rc.indociptawisesa.co.id/akun/detailkartu/'.$reff_id;//dd($reff_id);
+
+$generateqrcode = QrCode::size(100)
+        ->format('png')
+        ->generate($reff_id1, public_path('qrcode/'.$reff_id.'.png'));
+}else{
             $insert ='gagal';
         }//exit();
           //dd($insert);

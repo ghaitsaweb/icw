@@ -39,9 +39,10 @@
                                 <td>{{ $item->product_uom_qty }}</td>
                                 <td>
                               {{ $item->kategori }} </td> 
-                                <td>@if($item->x_kartu==1)    <button type="button" class="btn btn-success" onclick="detail({{$bpj}});" data-id="{{$bpj}}">
-                   Created
-                   </button>
+                                <td>@if($item->x_kartu==1)   
+                   <a class="btn btn-success" href="{{action('AkunController@barcode', $item->id_card)}}" role="button"><i
+                        class="fa fa-qrcode"></i> Cetak</a>
+ 
                                 @else
                                                                             <button type="button" class="btn btn-primary" onclick="buat({{$bpj}},{{$item->product_id}},{{$item->id}},{{$item->default_code}},{{$item->name}},'{{$item->name_template}}',{{$item->product_uom_qty}},'{{$item->kategori}}','{{$item->uomname}}');" data-id="{{$bpj}}">
                     Buat Kartu stock
@@ -232,6 +233,38 @@
         }
        });
 } 
+function detail(id) 
+{
+    // alert(id);return false;
+
+
+    // var r = confirm("Apakah anda ingin Membuat kartu stock!");
+    $.ajax({
+        url:"{{route('akun.barcode')}}",
+        type:"POST",
+        data:{
+          id:id
+          
+        },
+    //     xhrFields: {
+    //     responseType: 'blob'  // without this, you will get blank pdf!
+    // },
+        beforeSend: function () {
+			
+			},
+        success:function(response){  alert(response); //return false;
+           
+       
+        },
+        error: function(error) {
+         console.log(error);
+          $('#nameError').text(response.responseJSON.errors.name);
+          $('#emailError').text(response.responseJSON.errors.email);
+          $('#mobileError').text(response.responseJSON.errors.mobile);
+          $('#messageError').text(response.responseJSON.errors.message);
+        }
+       });
+}
             
         </script>
     @endpush
