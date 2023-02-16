@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Auth;
+use Illuminate\Support\Facades\Validator;
+
 class LoginController extends Controller
 {
     /*
@@ -63,4 +65,6 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
+
+
 }

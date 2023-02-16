@@ -14,9 +14,9 @@
                         
                             <th>No</th>
                             <th>Pembuat (Tanggal)</th>
-                            <th>Masuk</th>
+                          
                             <th>Keluar</th>
-                           <th>Aksi</th>
+                           <th>Keterangan</th>
                         </tr>
                       
                     </thead>
@@ -25,13 +25,14 @@
                             <tr>
                                <td>{{ $loop->iteration }} </td>
                                 <td>{{ $item->created }} ({{ $item->tanggal_masuk }})</td>
-                                <td>{{ $item->masuk }}</td>
+                               
                                 <td>{{ $item->keluar }}</td>
                             
-                                <td>
-                                <button type="button" class="btn btn-danger" onclick="hapus({{$item->created}});" data-id="{{$item->created}}">
+                                <td> {{ $item->name }}
+                                <!-- <button type="button" class="btn btn-danger" onclick="hapus({{$item->id_kartustock}});">
                     Hapus
-                   </button></td>
+                   </button> -->
+                   </td>
                                 </tr>
                             </tr>
                         @endforeach
@@ -45,30 +46,23 @@
 
 
                         <div class="form-actions">
-                            <!-- <button type="submit" class="btn btn-success"> <i class="fa fa-check"></i> Save</button> -->
                         </div>
                     </form>
                 </div>
             </div>
             @push('myjs')
         <script>
-                    function buat(IDstock,product_id,id,default_code,productionlot,nama,uom,kat) 
+                    function hapus(id) 
 {
-    //lert(uom);return false;
+    //alert(id);return false;
 
 
-    var r = confirm("Apakah anda ingin Membuat kartu stock!");
+    var r = confirm("Apakah andaakan hapus!");
     $.ajax({
-        url:"{{route('akun.buat')}}",
+        url:"{{route('akun.hapus')}}",
         type:"POST",
         data:{
-          IDstock:IDstock,
-          product_id:product_id,
-          id:id,
-          default_code:default_code,
-          productionlot:productionlot,nama:nama,
-          uom:uom,
-          kat:kat
+          id:id
           
         },
         beforeSend: function () {
@@ -76,41 +70,10 @@
 			
 			},
         success:function(response){  //alert(response); return false;
-          $("#konten").html('');
-          if(response === true){
-          alert(response); 
-            }
-            else{
-          alert('berhasil buat kartu stock');
-            }
+          alert(response);
+          location.reload();return false;
            
-            $.ajax({
-        url: "{{route('akun.showtujuan')}}",
-        type:"POST",
-        data:{
-          IDstock:IDstock
-        },
-        beforeSend: function () {
-				$("#konten").html('<i class="fa fa-refresh fa-spin"></i>');
-			
-			},
-        success:function(response){//console.log(response);return false;
-            $("#konten").html(response);
-          //console.log(response);return false;
 
-        },
-        error: function(error) {
-         console.log(error);
-          $('#nameError').text(response.responseJSON.errors.name);
-          $('#emailError').text(response.responseJSON.errors.email);
-          $('#mobileError').text(response.responseJSON.errors.mobile);
-          $('#messageError').text(response.responseJSON.errors.message);
-        }
-       });
-
-
-           
-       
         },
         error: function(error) {
          console.log(error);

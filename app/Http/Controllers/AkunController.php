@@ -188,14 +188,45 @@ return json_encode($data);
         ->limit(3)
         ->get();//dd($suggest);
         $manual = \   DB::table('lok')  
-        ->where('lok.kategori', '=', $data->kategori_barang)
-        ->where('lok.gudang', '=', $ak)
+        //->where('lok.kategori', '=', $data->kategori_barang)
+       // ->where('lok.gudang', '=', $ak)
         ->select('lok.id as id','lok.nama_lokasi as nama','lok.gudang as gudang','lok.kategori as kategori','lok.kapasitas as kapasitas','lok.terpakai as terpakai','lok.percent as percent','lok.pr as pr')
         ->orderBy('lok.terpakai', 'ASC')
         ->get();
 
         return view('akun.detailkartu',compact('ids','data','suggest','manual'));
 
+    }
+    public function hapus(Request $request)
+    {     $data = \   DB::table('kartu_stok_detail')  
+        ->where('kartu_stok_detail.id_kartustock', '=', $request->id)
+        ->select('kartu_stok_detail.keluar','kartu_stok_detail.idmaster')
+        ->first();
+        $keluar =$data->keluar;
+        $idmaster =$data->idmaster;
+    $data1 = \   DB::table('kartu_stock')  
+    ->where('kartu_stock.id', '=', $idmaster)
+    ->select('kartu_stock.qty_gerak')
+    ->first();
+     $qty_gerak =$data1->qty_gerak;
+     $updt =  $qty_gerak+$keluar;
+    $update = \ DB::table('kartu_stock')->where('id', $idmaster)->update(array('qty_gerak' => $updt)); 
+   if($update==1){
+    $deletedRows = DB::table('kartu_stok_detail')
+    ->where('kartu_stok_detail.id_kartustock', '=', $request->id)
+    ->delete();
+    $angka='Berhasil Hapus';
+        }
+          else{
+            $angka='gagal hapus Coba Ulangi !';
+          }
+          return json_encode($angka);
+
+        // $data = \   DB::table('kartu_stok_detail')  
+        // ->where('kartu_stok_detail.idmaster', '=', $request->id)
+        // ->get();
+        // //dd($data);
+        // return view('akun.dkartu',compact('data'));
     }
     public function qtyout(Request $request)
     { 
@@ -227,7 +258,6 @@ return json_encode($data);
           }
           return json_encode($angka);
     }
-
     public function qtyin(Request $request)
     { 
         $date   = new DateTime();
@@ -237,8 +267,8 @@ return json_encode($data);
     ->where('kartu_stock.id', '=', $request->id)
     ->select('kartu_stock.qty_gerak')
     ->first();
-    $angka =$data->qty_gerak;//dd($angka);
-    $hasil =  $angka + $request->qtyin; //dd($hasil);
+    $angka =$data->qty_gerak;
+    $hasil =  $angka + $request->qtyin; 
     $update = \ DB::table('kartu_stock')->where('id', $request->id)->update(array('qty_gerak' => $hasil)); 
    if($update==1){
        $insert = \ DB::table('kartu_stok_detail')->insert(
@@ -256,9 +286,7 @@ return json_encode($data);
           return json_encode($angka);
     }
     public function showtujuan(Request $request)
-    {     
-        
-      //  $stock = Stock::where('picking_id', '=', $request->IDstock)->orderby('id', 'desc')->get();
+    {   
         $bpj =  $request->IDstock;
         $data = \   DB::table('stock_move')
         ->join('product_product', 'product_product.id', '=', 'stock_move.product_id')
@@ -269,23 +297,42 @@ return json_encode($data);
         ->join('stock_production_lot', 'stock_production_lot.id', '=', 'mrp_production.lot_id')
         ->leftjoin('kartu_stock', 'kartu_stock.id_stockmove', '=', 'stock_move.id')
         ->where('stock_move.picking_id', '=', $request->IDstock)
-        ->leftjoin('adjustment', 'adjustment.product_id', '=', 'stock_move.product_id')     
-        // ->where('adjustment.status', '=', 'done')
+        ->leftjoin('adjustment', 'adjustment.product_id', '=', 'stock_move.product_id')  
         ->select('stock_move.id as id','stock_move.x_kartu', 'product_template.name as name_template','stock_production_lot.name','stock_move.product_uom_qty','adjustment.kategori as kategori','stock_move.product_id as product_id'
         ,'product_product.default_code as default_code','product_uom.name as uomname','kartu_stock.id as id_card')
         ->get();
-       //dd($data);
+
         return view('akun.detail',compact('data', 'bpj'));
     }
+    public function cek()
+    {
+          
+        $bpj =  $request->IDstock;
+        $data = \   DB::table('stock_move')
+        ->join('product_product', 'product_product.id', '=', 'stock_move.product_id')
+        ->join('product_template', 'product_product.product_tmpl_id', '=', 'product_template.id')
+        ->join('product_uom', 'product_template.uom_id', '=', 'product_uom.id')
+        ->leftjoin('stock_picking', 'stock_picking.id', '=', 'stock_move.picking_id')
+        ->join('mrp_production', 'mrp_production.name', '=', 'stock_picking.origin')
+        ->join('stock_production_lot', 'stock_production_lot.id', '=', 'mrp_production.lot_id')
+        ->leftjoin('kartu_stock', 'kartu_stock.id_stockmove', '=', 'stock_move.id')
+        ->where('stock_move.picking_id', '=', $request->IDstock)
+        ->leftjoin('adjustment', 'adjustment.product_id', '=', 'stock_move.product_id')  
+        ->select('stock_move.id as id','stock_move.x_kartu', 'product_template.name as name_template','stock_production_lot.name','stock_move.product_uom_qty','adjustment.kategori as kategori','stock_move.product_id as product_id'
+        ,'product_product.default_code as default_code','product_uom.name as uomname','kartu_stock.id as id_card')
+        ->get();
 
-    
+        return view('akun.detail',compact('data', 'bpj'));
+
+    }
     public function details(Request $request)
     {     
 
         $data = \   DB::table('kartu_stok_detail')  
+        ->leftjoin('stock_pack_operation', 'kartu_stok_detail.idoperation', '=', 'stock_pack_operation.id')
+        ->leftjoin('stock_picking', 'stock_pack_operation.picking_id', '=', 'stock_picking.id')
         ->where('kartu_stok_detail.idmaster', '=', $request->id)
-        ->get();
-        //dd($data);
+        ->get();//dd();
         return view('akun.dkartu',compact('data'));
     }
     public function posts(Request $request)
@@ -305,17 +352,15 @@ return json_encode($data);
             ['id_kartu' => $request->id, 'id_lok_seb' => $idlocks,
             'id_lok_sessdh' => $request->value, 'aktor' => $auth, 'create_date' => $date]
               ); 
-
-       
         if($insert==true){
             $hasil = \ DB::table('kartu_stock')->where('id', $request->id)->update(array('id_lok' => $request->value)); 
             if($hasil==1){
                 if(!empty($idlocks)){
                 $data1 = \   DB::table('master_lokasi')  
                 ->where('master_lokasi.id', '=', $data->id_lok)
-                ->first();  //dd($data1);
+                ->first();  
                 if(!empty($data1->terpakai)){
-                    $tot = $data1->terpakai-$request->qty; //dd($tot);
+                    $tot = $data1->terpakai-$request->qty; 
                      }
                      else{
                         $tot = $request->qty;
@@ -324,7 +369,7 @@ return json_encode($data);
                     }
                 $data2 = \   DB::table('master_lokasi')  
                 ->where('master_lokasi.id', '=', $request->value)
-                ->first();  //dd($data2);
+                ->first(); 
                 $tot1 = $data2->terpakai+$request->qty;
                 $hasil2 = \ DB::table('master_lokasi')->where('id', $request->value)->update(array('terpakai' => $tot1)); 
                if($hasil2==1){
@@ -361,7 +406,11 @@ return json_encode($data);
         $cabang = CabangModel::all();
         return view('akun.edit', compact('user', 'cabang', 'log'));
     }
-
+    public function downloadImage($filename)
+    {
+        return response()->download(public_path('/qrcode/' . $filename.'.png'));
+        
+    }
         public function buat(Request $request)
     {
 
@@ -381,11 +430,18 @@ return json_encode($data);
                   ); 
 $reff_id = DB::getPdo()->lastInsertId();
 
-$reff_id1 ='http://rc.indociptawisesa.co.id/akun/detailkartu/'.$reff_id;//dd($reff_id);
+$reff_id1 =url('akun/detailkartu/'.$reff_id);//dd($reff_id);
 
 $generateqrcode = QrCode::size(100)
         ->format('png')
-        ->generate($reff_id1, public_path('qrcode/'.$reff_id.'.png'));
+        ->generate($reff_id1, public_path('qrcode/'.$request->productionlot.'.png'));
+
+
+// $reff_id1 =url('akun/detaillot/'.$request->productionlot);//dd($reff_id);
+
+// $generateqrcode = QrCode::size(100)
+//         ->format('png')
+//         ->generate($reff_id1, public_path('qrcode/'.$request->productionlot.'.png'));
 }else{
             $insert ='gagal';
         }//exit();

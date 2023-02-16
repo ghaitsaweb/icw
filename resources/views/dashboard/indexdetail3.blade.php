@@ -43,10 +43,11 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Nomor kartu</th>
-                            <th>Nama || Code || uom || Lot</th>
+                            <th>Nama || Code </th>
+                            <th>Lot || Uom </th>
                             <th>Qty</th>
                             <th>Kategori</th>
+                            <th>detail</th>
 
                         </tr>
                     </thead>
@@ -55,12 +56,12 @@
                         @foreach ($data as $item)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $item->id }}</td>
                                 <td>{{ $item->nama_barang }} || {{ $item->default_code }}</td>
+                                <td>{{ $item->productionlot }} || {{ $item->uom }}</td>
                                 <td>{{ $item->qty_gerak }}</td>
                                 <td>{{ $item->kategori_barang }}
-                                </td>
-                               
+                                </td><td>
+                                <a href="{{ url('akun/detailkartu/'.$item->id) }}" class="btn btn-info d-none d-lg-block m-l-15"> Detail</a></td>
                             </tr>
                         @endforeach
                     </tbody>

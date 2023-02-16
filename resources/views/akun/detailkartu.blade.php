@@ -9,10 +9,7 @@
             </div>
         </div>
         <div class="col-md-7 align-self-center text-right">
-        <!-- <a href="{{ url('akun/pdfc/') }}" class="btn btn-info d-none d-lg-block m-l-15"><i
-                        class="fa fa-plus-circle"></i>{!! QrCode::size(100)->generate('sahretech.com'); !!} Detail</a> -->
-
-        </div>
+ </div>
     </div>
     @if (session('pesan'))
         <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -26,10 +23,7 @@
         <div class="card-body">
 
             <div class="dropdown">
-                {{-- <button class="btn btn-Secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fas fa-filter"></i> Filter
-                </button> --}}
+
             </div>
             <div class="table-responsive m-t-40">
                 <table id="detailkartu" class="display nowrap table1 table-hover table-striped table-bordered" cellspacing="0"
@@ -37,7 +31,7 @@
                     <thead>
                         <tr>
                          
-                            <th>Nomor kartu</th>
+                        
                             <th>Nama | (code) | Lot</th>
                             <th>Qtyawal</th>
                             <th>sisa</th>
@@ -51,7 +45,7 @@
                       
                             <tr>
                             
-                                <td>{{ $data->iddetail }}</td>
+                              
                                 <td>{{ $data->nama_barang }} | ({{ $data->default_code }}) | ({{ $data->productionlot }})</td>
                                 <td>{{ $data->qty }}</td>
                                 <td>{{ $data->qty_g }}</td>
@@ -67,12 +61,12 @@
                 </table>
             </div>
 
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+              <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
               Qty Out
-                    </button>
-              <button type="button" class="btn btn-success" data-toggle="modal" data-target="#qtyin">
+                    </button> -->
+              <!-- <button type="button" class="btn btn-success" data-toggle="modal" data-target="#qtyin">
               Qty In
-                    </button>
+                    </button> -->
                     <button type="button" class="btn btn-warning" onclick="detail({{$ids}});" data-id="{{$ids}}">
                     Detail
                    </button>

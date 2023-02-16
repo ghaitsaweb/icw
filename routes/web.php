@@ -18,17 +18,19 @@ Route::get('/', 'HomeController@index')->name('home');
 Route::resource('akun', 'AkunController');
 Route::resource('masterflow', 'MasterflowController');
 Route::resource('report', 'ReportController');
-
+Route::resource('sj', 'SjController');
 Route::resource('lokasi', 'LokasiController');
 Route::get('/lokasi/detail/{id}', 'LokasiController@detail');
 Route::get('/lokasi/detail1/{id}', 'LokasiController@detail1');
 Route::post('loksave', 'LokasiController@loksave')->name('lokasi.loksave'); 
 Route::get('/lokasi/edit/{id}', 'LokasiController@edit');
-Route::post('lokedit', 'LokasiController@lokedit')->name('lokasi.lokedit');
-
+Route::post('lokedit', 'LokasiController@lokedit')->name('lokasi.lokedit'); 
 Route::get('/lokasi/create1/{id}', 'LokasiController@create1');
 
+Route::post('buatsj', 'SjController@buatsj')->name('sj.buatsj');
+
 Route::post('showtujuan', 'AkunController@showtujuan')->name('akun.showtujuan'); 
+Route::post('showt', 'SjController@showt')->name('sj.showt'); 
 Route::post('detail', 'AkunController@detail')->name('akun.detail'); 
 Route::resource('adjust', 'AdjustmentController');
 Route::post('approve', 'AdjustmentController@approve')->name('adjust.approve');  
@@ -38,6 +40,8 @@ Route::post('hapus', 'AdjustmentController@hapus')->name('adjust.hapus');
 Route::post('showadj', 'AdjustmentController@showadj')->name('adjust.showadj');  
 Route::post('reject', 'AdjustmentController@reject')->name('adjust.reject');
 Route::post('buat', 'AkunController@buat')->name('akun.buat'); 
+Route::post('hapus', 'AkunController@hapus')->name('akun.hapus'); 
+Route::get('download/{filename}', 'AkunController@downloadImage');
 Route::post('upload', 'AdjustmentController@upload')->name('adjust.upload');  
 Route::get('/akun/detailkartu/{id}', 'AkunController@detail'); 
 Route::post('qtyout', 'AkunController@qtyout')->name('akun.qtyout'); 

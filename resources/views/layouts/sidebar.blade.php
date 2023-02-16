@@ -32,6 +32,9 @@
                 <li> <a class="waves-effect waves-dark" href="{{ route('akun.index') }}"><i
                             class="fas fa-users-cog"></i><span class="hide-menu">Racking</span></a>
                 </li>
+                <li> <a class="waves-effect waves-dark" href="{{ route('sj.create') }}"><i
+                            class="fas fa-users-cog"></i><span class="hide-menu">Surat Jalan</span></a>
+                </li>
                 <li> <a class="waves-effect waves-dark" href="{{ route('report.index') }}"><i
                             class="fas fa-users-cog"></i><span class="hide-menu">Report</span></a>
                 </li>

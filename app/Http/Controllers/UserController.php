@@ -43,8 +43,7 @@ class UserController extends Controller
         $req = RequestModel::select('no_req')->orderby('created_at','desc')->first();
         dd($req);
         if($req != null){
-            $djancuk='asu';
-            dd($djancuk);
+
             $bulan = $date->format('m');
             $bulanreq = substr($req->no_req,6,2);
             if($bulan == $bulanreq){

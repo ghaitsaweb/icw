@@ -40,12 +40,14 @@
                                 <td>
                               {{ $item->kategori }} </td> 
                                 <td>@if($item->x_kartu==1)   
-                   <a class="btn btn-success" href="{{action('AkunController@barcode', $item->id_card)}}" role="button"><i
-                        class="fa fa-qrcode"></i> Cetak</a>
+                   <!-- <a class="btn btn-success" href="{{action('AkunController@barcode', $item->id_card)}}" role="button"><i
+                        class="fa fa-qrcode"></i> Cetak</a> -->
+                        <a class="btn btn-success d-none d-lg-block m-l-15" href="{{ url('download/'.$item->name) }}" class="btn btn-success"><i
+                         class="fa fa-qrcode"></i> Cetak</a>
  
                                 @else
                                                                             <button type="button" class="btn btn-primary" onclick="buat({{$bpj}},{{$item->product_id}},{{$item->id}},{{$item->default_code}},{{$item->name}},'{{$item->name_template}}',{{$item->product_uom_qty}},'{{$item->kategori}}','{{$item->uomname}}');" data-id="{{$bpj}}">
-                    Buat Kartu stock
+                    Buat Qrcode
                    </button>@endif
                    </td>
                    <!-- <button class="btn btn-primary save-data-kartu">Lihat Adjustment</button> -->
